@@ -4,7 +4,14 @@ on:
   schedule:
     - cron: "0 0 1 * *"   # 00:00 UTC on the 1st of each month
   workflow_dispatch:
-
+    inputs:
+      mode:
+        description: "Run mode"
+        required: true
+        default: "monthly"
+        type: choice
+        options: ["init","monthly"]
+        
 permissions:
   contents: write
 
@@ -29,13 +36,17 @@ jobs:
       - name: Install Python deps (best-effort)
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
-
+      - name: Ensure STATE_OF_FIELD exists
+        run: |
+          if [ ! -f "reports/g-quadruplexes/STATE_OF_FIELD.md" ]; then
+            python run.py --field g-quadruplexes --mode init
+          fi
       - name: Generate report
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LLM_MODEL: gpt-4o-mini
         run: |
-          python run.py --field "${{ matrix.field }}" --mode "${{ matrix.mode }}"
+          python run.py --field "${{ matrix.field }}" --mode "${{ github.event.inputs.mode || matrix.mode }}"
 
       - name: Commit and push if changed
         run: |
