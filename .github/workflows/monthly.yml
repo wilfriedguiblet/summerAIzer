@@ -33,6 +33,7 @@ jobs:
       - name: Generate report
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LLM_MODEL: gpt-4o-mini
         run: |
           python run.py --field "${{ matrix.field }}" --mode "${{ matrix.mode }}"
 
