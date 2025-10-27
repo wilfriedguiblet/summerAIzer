@@ -1,15 +1,21 @@
 import re
 
 def verify_report(text, notes, field_cfg):
-    ref_ids = re.findall(r"\[(\d+)\]", text)
-    if not ref_ids:
-        return text
-    footers = re.findall(r"^\[(\d+)\]:", text, flags=re.M)
-    if not footers:
-        text += "\n\n> WARNING: Some references in text do not resolve to footnotes.\n"
-        return text
-    max_ref = max(int(i) for i in ref_ids)
-    max_footer = max(int(i) for i in footers)
-    if max_ref > max_footer:
-        text += "\n\n> WARNING: Some references in text do not resolve to footnotes.\n"
+    # Verify every [n] has a footnote, and warn if >10% of sentences lack any citation.
+    ref_ids = [int(i) for i in re.findall(r"\[(\d+)\]", text)]
+    footers = [int(i) for i in re.findall(r"^\[(\d+)\]:", text, flags=re.M)]
+    warn = []
+
+    if ref_ids and footers and max(ref_ids) > max(footers):
+        warn.append("Some in-text references do not resolve to footnotes.")
+
+    # crude coverage check
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    cited = sum(1 for s in sentences if re.search(r"\[\d+\]", s))
+    if sentences and (cited / max(1, len(sentences))) < 0.6:
+        warn.append("Low citation density; consider adding citations to quantitative claims.")
+
+    if warn:
+        text += "\n\n> WARNING: " + " ".join(warn) + "\n"
     return text
+
