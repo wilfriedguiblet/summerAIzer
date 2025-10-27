@@ -1,4 +1,10 @@
+# auto-reviewer (fuller MVP)
 
-# auto-reviewer (starter)
+Automated agent that summarizes a scientific field and posts monthly updates as GitHub Markdown.
 
-Automated AI agent that summarizes the current knowledge in a field and posts monthly updates as GitHub Markdown.
+Includes:
+- Europe PMC and Crossref ingestion
+- Curation and novelty scoring
+- Extractive notes from abstracts
+- Markdown reports with footnotes
+- Hardened GitHub Actions workflow

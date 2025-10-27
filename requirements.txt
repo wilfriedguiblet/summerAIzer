@@ -1,5 +1,7 @@
 requests
 pyyaml
-sentence-transformers
-pandas
 numpy
+pandas
+scikit-learn
+sentence-transformers
+tiktoken

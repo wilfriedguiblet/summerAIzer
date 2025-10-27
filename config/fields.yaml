@@ -1,11 +1,30 @@
-
 fields:
   - name: "G-quadruplexes"
     slug: "g-quadruplexes"
     queries:
       boolean:
-        - '(("G-quadruplex" OR "G quadruplex") AND (DNA OR RNA))'
+        - "(G-quadruplex OR G4) AND (DNA OR RNA)"
+        - "(quadruplex) AND (helicase OR Pif1 OR DHX36 OR RHAU)"
+        - "(G-quadruplex OR G4) AND (ligand OR stabilizer OR topology OR telomere OR promoter)"
+      keywords:
+        include: ["G4", "quadruplex", "telomeric", "Pif1", "RHAU", "DHX36", "BG4", "rG4"]
+        exclude: ["quadruplet codon", "G4 processor"]
     venues:
-      whitelist: ["Nature", "Science"]
+      whitelist:
+        - "Nucleic Acids Research"
+        - "Nature Communications"
+        - "Nature Chemical Biology"
+        - "Journal of the American Chemical Society"
+        - "Angewandte Chemie"
+        - "Cell Reports"
+        - "Science"
+        - "Nature"
+        - "bioRxiv"
+        - "ChemBioChem"
+      blacklist: []
     thresholds:
       min_rank_score: 0.35
+      novelty_cosine: 0.18
+    output:
+      max_initial_pages: 2
+      max_monthly_pages: 1

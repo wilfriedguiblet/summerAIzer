@@ -1,0 +1,7 @@
+sources:
+  europe_pmc:
+    enabled: true
+  crossref:
+    enabled: true
+common:
+  reports_dir: "./reports"
