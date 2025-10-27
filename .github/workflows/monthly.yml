@@ -1,21 +1,49 @@
+name: auto-reviewer-monthly
 
-name: auto-reviewer
 on:
   schedule:
-    - cron: "0 0 1 * *"
+    - cron: "0 0 1 * *"   # 00:00 UTC on the 1st of each month
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        field: [ "g-quadruplexes" ]
+        mode: [ "monthly" ]
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python run.py --field g-quadruplexes --mode monthly
-      - run: |
-          git config user.name "bot"
+
+      # Fine even if your current run.py is stdlib only; keep this for future upgrades
+      - name: Install Python deps (best-effort)
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+
+      - name: Generate report
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python run.py --field "${{ matrix.field }}" --mode "${{ matrix.mode }}"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "summerAIzer-bot"
           git config user.email "bot@example.com"
-          git add reports/*
-          git commit -m "Monthly update" || echo "No changes"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Auto: ${{ matrix.field }} ${{ matrix.mode }} $(date -u +%Y-%m)"
           git push
