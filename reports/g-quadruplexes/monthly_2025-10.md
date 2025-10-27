@@ -23,7 +23,7 @@
 - **ALS-associated FUS mutation reshapes the RNA and protein composition of stress granules.** - Stress granules (SG) are part of a cellular protection mechanism where untranslated messenger RNAs and RNA-binding proteins are stored upon conditions of cellular stress. [20]
 
 ## What Changed vs Last Month
-- New items: 1063
+- New items: 1066
 
 ## Signals to Watch
 - Retractions or expressions of concern will appear here.
