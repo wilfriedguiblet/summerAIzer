@@ -1,0 +1,11 @@
+
+fields:
+  - name: "G-quadruplexes"
+    slug: "g-quadruplexes"
+    queries:
+      boolean:
+        - '(("G-quadruplex" OR "G quadruplex") AND (DNA OR RNA))'
+    venues:
+      whitelist: ["Nature", "Science"]
+    thresholds:
+      min_rank_score: 0.35

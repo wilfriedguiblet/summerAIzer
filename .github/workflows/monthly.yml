@@ -1,0 +1,21 @@
+
+name: auto-reviewer
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python run.py --field g-quadruplexes --mode monthly
+      - run: |
+          git config user.name "bot"
+          git config user.email "bot@example.com"
+          git add reports/*
+          git commit -m "Monthly update" || echo "No changes"
+          git push
